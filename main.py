@@ -213,7 +213,13 @@ ptb_app.add_handler(CallbackQueryHandler(show_teachers,  pattern="^sub_"))
 def webhook():
     data   = request.get_json(force=True)
     update = Update.de_json(data, ptb_app.bot)
-    asyncio.run(ptb_app.process_update(update))
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        loop.run_until_complete(ptb_app.initialize())
+        loop.run_until_complete(ptb_app.process_update(update))
+    finally:
+        loop.close()
     return jsonify({"ok": True})
 
 @app.route("/", methods=["GET"])
