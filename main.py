@@ -40,8 +40,8 @@ db = firestore.client()
 # ═══════════════════════════════════════════
 #              Flask & PTB
 # ═══════════════════════════════════════════
-flask_app = Flask(__name__)
-ptb_app   = Application.builder().token(BOT_TOKEN).build()
+app     = Flask(__name__)
+ptb_app = Application.builder().token(BOT_TOKEN).build()
 
 
 # ────────────────────────────────────────────
@@ -204,14 +204,14 @@ ptb_app.add_handler(CallbackQueryHandler(show_teachers,  pattern="^sub_"))
 # ═══════════════════════════════════════════
 #              Webhook Routes
 # ═══════════════════════════════════════════
-@flask_app.route(f"/{BOT_TOKEN}", methods=["POST"])
+@app.route(f"/{BOT_TOKEN}", methods=["POST"])
 def webhook():
     data   = request.get_json(force=True)
     update = Update.de_json(data, ptb_app.bot)
     asyncio.run(ptb_app.process_update(update))
     return jsonify({"ok": True})
 
-@flask_app.route("/", methods=["GET"])
+@app.route("/", methods=["GET"])
 def index():
     return "✅ FULL MARK Bot — Running 🚀", 200
 
@@ -220,4 +220,4 @@ def index():
 #              تشغيل محلي (اختياري)
 # ═══════════════════════════════════════════
 if __name__ == "__main__":
-    flask_app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
