@@ -33,7 +33,12 @@ DATA = {
 #              ربط Firebase
 # ═══════════════════════════════════════════
 if not firebase_admin._apps:
-    cred = credentials.Certificate("serviceAccountKey.json")
+    import json as _json
+    _key = os.environ.get("FIREBASE_KEY")
+    if _key:
+        cred = credentials.Certificate(_json.loads(_key))
+    else:
+        cred = credentials.Certificate("serviceAccountKey.json")
     firebase_admin.initialize_app(cred)
 db = firestore.client()
 
